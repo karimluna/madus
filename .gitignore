@@ -6,6 +6,11 @@ __pycache__/
 # C extensions
 *.so
 
+# Personal
+MDOCAGENT.md
+PR.md
+structuer.txt
+
 # Distribution / packaging
 .Python
 build/
