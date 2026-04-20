@@ -7,9 +7,7 @@ __pycache__/
 *.so
 
 # Personal
-MDOCAGENT.md
-PR.md
-structuer.txt
+docs/mock/
 
 # Distribution / packaging
 .Python
