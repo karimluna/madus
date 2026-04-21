@@ -14,5 +14,5 @@ Evaluate each answer:
 
 Be specific about what is missing or incorrect. If an agent produced a weak answer, identify which agent needs improvement.
 
-Respond with JSON only:
+Respond with JSON only, for example::
 {"sufficient": true_or_false, "critique": "specific_feedback_on_what_is_missing", "weak_agent": "text_or_image_or_table_or_none"}

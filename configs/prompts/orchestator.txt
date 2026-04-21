@@ -14,7 +14,7 @@ Tables available: {{table_count}}
 Critic feedback (if retry): {{critique}}
 Retry count: {{retry_count}}
 
-Respond with JSON only:
+Respond with JSON only, for example::
 {"agents": ["text", "image", "table"]}
 
 Include only agents that are relevant. If no images exist, do not include "image". If no tables exist, do not include "table". If the critique identifies a specific weak agent, only include that agent on retry.
