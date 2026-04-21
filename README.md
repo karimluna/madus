@@ -1,6 +1,6 @@
 
 <p align="center">
-  <h2 align="center">Madus (in development)</h2>
+  <h2 align="center">Madus</h2>
   <div>
     <p align="center">
       <img src="https://imgs.search.brave.com/Wb6Sisi4g7_whHwXQCSVRHR3gIT68vXJM9ILC5frnfA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWdz/LnNlYXJjaC5icmF2/ZS5jb20vQThrMFRj/TU1EaHMtSUJSSld5/Z0IzMGdRZXd1Z3lu/S0g1RkNzZnN6TjNw/MC9yczpmaXQ6NTAw/OjA6MDowL2c6Y2Uv/YUhSMGNITTZMeTlw/TG5CcC9ibWx0Wnk1/amIyMHZiM0pwL1oy/bHVZV3h6THpVeEx6/SmkvTDJOaUx6VXhN/bUpqWW1NeC9ZVGN3/WW1Rek5ERTVOemcy/L1pXWTJOV1EzWVdZ/NVpHTmwvTG1wd1p3" width="200"/>
@@ -14,7 +14,7 @@
 </p>
 
 
-MADUS is a production-oriented multi-agent framework for document question answering over complex PDFs containing text, figures, and tables. It adapts the research architecture of [MDocAgent](https://arxiv.org/abs/2503.13964) (Han et al., 2025) into a scalable, deployable system built on LangGraph, FastAPI, and Docker.
+MADUS is a production-oriented multi-agent framework for document question answering over complex PDFs containing text, figures, and tables. It adapts the research architecture of [MDocAgent](https://arxiv.org/abs/2503.13964) (Han et al., 2025) with the addition of a hierarchical orchestator into a scalable, deployable system built on LangGraph, FastAPI, and Docker. 
 
 
 ## Architecture

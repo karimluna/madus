@@ -20,6 +20,24 @@ resolution-markers = [
 ]
 
 [[package]]
+name = "accelerate"
+version = "1.13.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "huggingface-hub" },
+    { name = "numpy" },
+    { name = "packaging" },
+    { name = "psutil" },
+    { name = "pyyaml" },
+    { name = "safetensors" },
+    { name = "torch" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ca/14/787e5498cd062640f0f3d92ef4ae4063174f76f9afd29d13fc52a319daae/accelerate-1.13.0.tar.gz", hash = "sha256:d631b4e0f5b3de4aff2d7e9e6857d164810dfc3237d54d017f075122d057b236", size = 402835, upload-time = "2026-03-04T19:34:12.359Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/7e/46/02ac5e262d4af18054b3e922b2baedbb2a03289ee792162de60a865defc5/accelerate-1.13.0-py3-none-any.whl", hash = "sha256:cf1a3efb96c18f7b152eb0fa7490f3710b19c3f395699358f08decca2b8b62e0", size = 383744, upload-time = "2026-03-04T19:34:10.313Z" },
+]
+
+[[package]]
 name = "aistudio-sdk"
 version = "0.3.8"
 source = { registry = "https://pypi.org/simple" }
@@ -416,6 +434,22 @@ wheels = [
 ]
 
 [[package]]
+name = "colpali-engine"
+version = "0.2.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "gputil" },
+    { name = "peft" },
+    { name = "requests" },
+    { name = "torch" },
+    { name = "transformers" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/5e/2c/5cca3b9d26d2c27298e174823cf339f49dc96588513c52ad8829b20eaa5e/colpali_engine-0.2.2.tar.gz", hash = "sha256:fcec57ccdfd8820dd7ae9b7c563cad3c8c96ad8685b77eb0df5c9a648b66431f", size = 35571, upload-time = "2024-09-06T10:44:54.464Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/9c/39/2691d67c1b10ce483a7445ef5040e4be6ef0d2d0bd1c593c4af469f69b9e/colpali_engine-0.2.2-py3-none-any.whl", hash = "sha256:954706cd8f019fcf707aa6c48ab7dc9bf32d47133c7cccd253d2e3d36f761c03", size = 37396, upload-time = "2024-09-06T10:44:53.111Z" },
+]
+
+[[package]]
 name = "crc32c"
 version = "2.8"
 source = { registry = "https://pypi.org/simple" }
@@ -679,6 +713,12 @@ sdist = { url = "https://files.pythonhosted.org/packages/20/18/a746c8344152d368a
 wheels = [
     { url = "https://files.pythonhosted.org/packages/b6/b0/be5d3329badb9230b765de6eea66b73abd5944bdeb5afb3562ddcd80ae84/googleapis_common_protos-1.74.0-py3-none-any.whl", hash = "sha256:702216f78610bb510e3f12ac3cafd281b7ac45cc5d86e90ad87e4d301a3426b5", size = 300743, upload-time = "2026-04-02T21:22:49.108Z" },
 ]
+
+[[package]]
+name = "gputil"
+version = "1.4.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/ed/0e/5c61eedde9f6c87713e89d794f01e378cfd9565847d4576fa627d758c554/GPUtil-1.4.0.tar.gz", hash = "sha256:099e52c65e512cdfa8c8763fca67f5a5c2afb63469602d5dcb4d296b3661efb9", size = 5545, upload-time = "2018-12-18T09:12:13.63Z" }
 
 [[package]]
 name = "grpcio"
@@ -1154,6 +1194,7 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "chromadb" },
+    { name = "colpali-engine" },
     { name = "databricks" },
     { name = "fastapi" },
     { name = "httpx" },
@@ -1178,6 +1219,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "chromadb", specifier = ">=1.5.8" },
+    { name = "colpali-engine", specifier = ">=0.2.2" },
     { name = "databricks", specifier = ">=0.2" },
     { name = "fastapi", specifier = ">=0.136.0" },
     { name = "httpx", specifier = ">=0.28.1" },
@@ -2065,6 +2107,27 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/38/37/9ca3519e92a8434eb93be570b131476cc0a4e840bb39c62ddb7813a39d53/pdfplumber-0.11.9.tar.gz", hash = "sha256:481224b678b2bbdbf376e2c39bf914144eef7c3d301b4a28eebf0f7f6109d6dc", size = 102768, upload-time = "2026-01-05T08:10:29.072Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/8b/c8/cdbc975f5b634e249cfa6597e37c50f3078412474f21c015e508bfbfe3c3/pdfplumber-0.11.9-py3-none-any.whl", hash = "sha256:33ec5580959ba524e9100138746e090879504c42955df1b8a997604dd326c443", size = 60045, upload-time = "2026-01-05T08:10:27.512Z" },
+]
+
+[[package]]
+name = "peft"
+version = "0.11.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "accelerate" },
+    { name = "huggingface-hub" },
+    { name = "numpy" },
+    { name = "packaging" },
+    { name = "psutil" },
+    { name = "pyyaml" },
+    { name = "safetensors" },
+    { name = "torch" },
+    { name = "tqdm" },
+    { name = "transformers" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/45/f8/8989b6e4bc4ef48e23f7f9077905873e18b577ead2760f7bab6bdae4473b/peft-0.11.1.tar.gz", hash = "sha256:c1a04462e589a1305a06f7c118be0b8602b829f9bfc2104b5c6514c7678c2310", size = 262612, upload-time = "2024-05-17T12:53:04.48Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/19/99/c5e0292a6d2a62e95c3dfe674ce9e8f8a9fe5d4835d3c9bb9b3e016f02ae/peft-0.11.1-py3-none-any.whl", hash = "sha256:76f2d2a4c9e0644e2741465663b8a02097775e9725d26d7b41551e6f1e72e7dd", size = 251583, upload-time = "2024-05-17T12:53:01.143Z" },
 ]
 
 [[package]]
