@@ -8,7 +8,7 @@ behind an env var is standard in production agent systems.
 import os 
 from pathlib import Path
 from functools import lru_cache
-
+from typing import Literal
 from pydantic_settings import BaseSettings
 from langchain_openai import ChatOpenAI
 
@@ -19,9 +19,9 @@ PROMPTS_DIR = PROJECT_ROOT / "configs" / "prompts"
 
 # `pydantic-settings` picks environment variables in real time with lowercases
 class Settings(BaseSettings):
-    llm_backend: str = "local"
-    vision_backend: str = "local"
-    embedding_backend: str = "local"
+    llm_backend: Literal["local", "openai"] = "local"
+    vision_backend: Literal["local", "colflow", "openai"] = "local" # colflow is optional as is more computationally demanding but still local
+    embedding_backend: Literal["local", "openai"] = "local"
     openai_api_key: str = ""
     redis_host: str = "localhost"
     redis_port: int = 6379
@@ -36,7 +36,8 @@ class Settings(BaseSettings):
 
 @lru_cache
 def get_settings() -> Settings:
-    return Settings
+    """Returns instatiation of the Settings class."""
+    return Settings()
 
 
 def get_chat_llm(vision: bool = False) -> ChatOpenAI:
