@@ -26,7 +26,6 @@ from pydantic import BaseModel
 from core.models import DocumentState
 from core.cache import get_cached, set_cached
 from core.databricks_sink import write_to_kb
-from services.api.app import get_graph
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -67,6 +66,7 @@ async def analyze(
                 cached=True,
             )
 
+        from services.api.app import get_graph
         graph = get_graph()
         initial = DocumentState(pdf_path=tmp.name, question=question)
         result = await graph.ainvoke(initial.model_dump())
@@ -142,6 +142,7 @@ async def analyze_stream(
             # Run the grap LangGraph is async so we await it directly.
             # We cannot yield mid-graph without restructuring the graph itself,
             # so we emit coarse-grained stage markers around the full call...
+            from services.api.app import get_graph
             graph = get_graph()
             initial = DocumentState(pdf_path=tmp.name, question=question)
 
@@ -172,3 +173,6 @@ async def analyze_stream(
                 pass
 
     return StreamingResponse(event_stream(), media_type="text/event-stream")
+
+
+
