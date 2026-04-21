@@ -132,7 +132,7 @@ async def analyze_stream(
                 return f"data: {json.dumps({'stage': stage, 'detail': detail})}\n\n"
 
             # Cache check, now with socket timeouts so it won't hang
-            cached_state = get_cached(tmp.name, question)
+            cached_state = await get_cached(tmp.name, question)
 
             if cached_state and cached_state.final_answer:
                 yield emit("cache_hit")
@@ -164,7 +164,7 @@ async def analyze_stream(
 
             final_state = DocumentState(**result) if isinstance(result, dict) else result
 
-            set_cached(tmp.name, question, final_state)
+            await set_cached(tmp.name, question, final_state)
 
             try:
                 write_to_kb(final_state)
