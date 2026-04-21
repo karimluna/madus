@@ -38,7 +38,7 @@ async def lifespan(app: FastAPI):
     def _warm_ocr():
         try:
             from services.extraction.ocr import _get_ocr
-            ocr = _get_ocr()
+            _get_ocr()
             logger.info("PaddleOCR warmed up successfully")
         except Exception as e:
             logger.warning("PaddleOCR warm-up failed (will retry on first request): %s", e)

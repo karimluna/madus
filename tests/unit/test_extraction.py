@@ -6,7 +6,6 @@ produce correct output shapes. They do not verify content accuracy
 """
 
 import pytest
-from unittest.mock import patch, MagicMock
 
 from core.models import ImageChunk, TableChunk
 from core.utils import table_to_markdown, parse_json

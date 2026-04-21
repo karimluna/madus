@@ -5,7 +5,6 @@ ref: nibzard/awesome-agentic-patterns: the pattern of a factory
 behind an env var is standard in production agent systems.
 """
 
-import os 
 from pathlib import Path
 from functools import lru_cache
 from typing import Literal

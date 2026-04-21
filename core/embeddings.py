@@ -6,7 +6,6 @@ ref: HNSW, https://arxiv.org/abs/1603.09320
 ref: ColPali, https://arxiv.org/abs/2407.01449
 """
 
-import os 
 import logging
 from typing import Optional
 

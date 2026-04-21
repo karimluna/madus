@@ -4,7 +4,6 @@ actions and time travel so you can audit what the system
 knew at any point in time"""
 
 import logging
-import os
 
 from core.models import DocumentState
 from core.config import get_settings
