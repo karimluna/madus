@@ -26,7 +26,7 @@ def get_graph():
 async def lifespan(app: FastAPI):
     """Startup: verify connections. Shutdown: clean up."""
     s = get_settings()
-    logger.info("MADUS starting — LLM backend: %s", s.llm_backend)
+    logger.info("MADUS starting: LLM backend: %s", s.llm_backend)
     logger.info("Embedding backend: %s", s.embedding_backend)
     # Pre-build graph on startup to catch config errors early
     get_graph()
