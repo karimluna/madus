@@ -53,10 +53,9 @@ async def analyze(
         tmp.write(content)
         tmp.flush()
         tmp.close()
-
         # Cache key now includes the question, same PDF, different
         # question produces an independent entry
-        cached_state = get_cached(tmp.name, question)
+        cached_state = await get_cached(tmp.name, question)
         if cached_state and cached_state.final_answer:
             logger.info("Cache hit for doc_id=%s", cached_state.doc_id)
             return AnalyzeResponse(
@@ -69,11 +68,16 @@ async def analyze(
         from services.api.app import get_graph
         graph = get_graph()
         initial = DocumentState(pdf_path=tmp.name, question=question)
-        result = await graph.ainvoke(initial.model_dump())
+
+        # 90 second overall timeout — prevents infinite hangs
+        result = await asyncio.wait_for(
+            graph.ainvoke(initial.model_dump()),
+            timeout=90.0,
+        )
 
         final_state = DocumentState(**result) if isinstance(result, dict) else result
 
-        set_cached(tmp.name, question, final_state)
+        await set_cached(tmp.name, question, final_state)
 
         try:
             write_to_kb(final_state)
@@ -87,6 +91,8 @@ async def analyze(
             cached=False,
         )
 
+    except asyncio.TimeoutError:
+        raise HTTPException(status_code=504, detail="Analysis timed out")
     except HTTPException:
         raise
     except Exception as e:
@@ -104,16 +110,11 @@ async def analyze_stream(
     file: UploadFile = File(...),
     question: str = Form(...),
 ):
-    """SSE variant of /analyze. Emits progress events so the client
-    can show a live status indicator during the cold-run pipeline.
+    """SSE variant. Each yield is flushed immediately by uvicorn
+    because we use an async generator with small payloads.
 
-    Events are newline-delimited JSON strings prefixed with 'data: ',
-    following the Server-Sent Events spec. The final event carries
-    the complete result payload.
-
-    Example client (JavaScript):
-        const es = new EventSource('/api/analyze/stream')
-        es.onmessage = (e) => console.log(JSON.parse(e.data))
+    The extraction runs in a ProcessPoolExecutor (via runners.py)
+    so the event loop is free to yield SSE events between stages.
     """
     if not file.filename or not file.filename.lower().endswith(".pdf"):
         raise HTTPException(status_code=400, detail="Only PDF files are accepted")
@@ -130,29 +131,38 @@ async def analyze_stream(
             def emit(stage: str, detail: str = "") -> str:
                 return f"data: {json.dumps({'stage': stage, 'detail': detail})}\n\n"
 
-            # Cache check
+            # Cache check, now with socket timeouts so it won't hang
             cached_state = get_cached(tmp.name, question)
+
             if cached_state and cached_state.final_answer:
                 yield emit("cache_hit")
-                yield f"data: {json.dumps({'stage': 'done', 'doc_id': cached_state.doc_id, 'final_answer': cached_state.final_answer, 'confidence': cached_state.confidence, 'cached': True})}\n\n"
+                yield emit("done", json.dumps({
+                    "doc_id": cached_state.doc_id,
+                    "final_answer": cached_state.final_answer,
+                    "confidence": cached_state.confidence,
+                    "cached": True,
+                }))
                 return
 
-            yield emit("extracting", "Running OCR, layout detection, and table parsing")
+            yield emit("extracting", "Running OCR, layout detection, and table parsing in background process")
 
-            # Run the grap LangGraph is async so we await it directly.
-            # We cannot yield mid-graph without restructuring the graph itself,
-            # so we emit coarse-grained stage markers around the full call...
             from services.api.app import get_graph
             graph = get_graph()
             initial = DocumentState(pdf_path=tmp.name, question=question)
 
-            # Emit agent stage before blocking on the graph
-            yield emit("running_agents", "Text, image, and table agents running in parallel")
+            yield emit("running_agents", "Agents processing the document")
 
-            result = await graph.ainvoke(initial.model_dump())
+            # Run with timeout: 90 seconds max for CPU bounds
+            try:
+                result = await asyncio.wait_for(
+                    graph.ainvoke(initial.model_dump()),
+                    timeout=90.0,
+                )
+            except asyncio.TimeoutError:
+                yield emit("error", "Analysis timed out after 90 seconds")
+                return
+
             final_state = DocumentState(**result) if isinstance(result, dict) else result
-
-            yield emit("critic", "Critic evaluating agent outputs")
 
             set_cached(tmp.name, question, final_state)
 
@@ -161,18 +171,29 @@ async def analyze_stream(
             except Exception as e:
                 logger.warning("Databricks sink failed: %s", e)
 
-            yield f"data: {json.dumps({'stage': 'done', 'doc_id': final_state.doc_id, 'final_answer': final_state.final_answer or 'Unable to determine an answer.', 'confidence': final_state.confidence, 'cached': False})}\n\n"
+            yield emit("done", json.dumps({
+                "doc_id": final_state.doc_id,
+                "final_answer": final_state.final_answer or "Unable to determine an answer.",
+                "confidence": final_state.confidence,
+                "cached": False,
+            }))
 
         except Exception as e:
             logger.exception("Streaming analysis failed")
-            yield f"data: {json.dumps({'stage': 'error', 'detail': str(e)})}\n\n"
+            yield emit("error", str(e))
         finally:
             try:
                 os.unlink(tmp.name)
             except OSError:
                 pass
 
-    return StreamingResponse(event_stream(), media_type="text/event-stream")
-
-
-
+    return StreamingResponse(
+        event_stream(),
+        media_type="text/event-stream",
+        headers={
+            # Prevent proxy buffering, each event must be sent immediately
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no", 
+        },
+    )

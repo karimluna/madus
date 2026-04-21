@@ -35,7 +35,7 @@ def rank_by_bm25(chunks: list[str], query: str) -> list[int]:
 def rank_by_semantic(doc_id: str, query: str, n: int = 20) -> list[int]:
     """Return chunk indices ranked by semantic similarity."""
     # Unpack the documents and IDs from our updated function
-    _, sem_ids = retrieve_semantic(doc_id, query, k=n)
+    docs, sem_ids = retrieve_semantic(doc_id, query, k=n)
     
     indices = []
     for chunk_id in sem_ids:
