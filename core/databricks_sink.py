@@ -24,7 +24,7 @@ def write_to_kb(state: DocumentState) -> None:
 
         with sql.connect(
             server_hostname=s.databricks_host,
-            http_paht=s.databricks_http_path,
+            http_path=s.databricks_http_path,
             access_token=s.databricks_token,
         ) as conn:
             with conn.cursor() as cur:

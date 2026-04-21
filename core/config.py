@@ -45,9 +45,10 @@ def get_chat_llm(vision: bool = False) -> ChatOpenAI:
     LangChain doesn't know the difference. Ollama has higher latency but 
     zero marginal cost"""
     s = get_settings()
-    if s.llm_backend == "local":
+    backend = s.vision_backend if vision else s.llm_backend
+    if backend == "local":
         return ChatOpenAI(
-            model="moondream" if vision else "qwen2.5:1.5b",
+            model="qwen2-vl" if vision else "qwen2.5:1.5b",
             base_url="http://localhost:11434/v1",
             api_key="ollama",
             temperature=0,

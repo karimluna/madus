@@ -188,4 +188,6 @@ def retrieve_semantic(doc_id: str, query: str, k: int = 5) -> list[str]:
         return []
     emb = get_text_embedder()
     results = col.query(query_embeddings=[emb.embed_query(query)], n_results=k)
-    return results["documents"][0] if results["documents"] else [], results["ids"][0]
+    if not results["documents"]:
+        return [], []
+    return results["documents"][0], results["ids"][0]
