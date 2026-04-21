@@ -142,7 +142,7 @@ def get_text_embedder():
 
 def get_image_embedder():
     s = get_settings()
-    if s.vision_backend == "siglip":
+    if s.vision_backend in ["siglip", "local"]:
         return SigLIPEmbeddings()
     if s.vision_backend == "colflow":
         return ColPaliEmbeddings()
