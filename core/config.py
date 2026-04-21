@@ -57,10 +57,24 @@ def get_chat_llm(vision: bool = False) -> ChatOpenAI:
 
 
 def load_prompt(name: str) -> str:
-    """Load a prompt template form configs/prompts/."""
+    """Load a prompt template from configs/prompts/.
+ 
+    Raises a clear error if the prompts directory or file
+    is missing.
+    """
+    if not PROMPTS_DIR.exists():
+        raise FileNotFoundError(
+            f"Prompts directory not found: {PROMPTS_DIR}\n"
+            f"Create it with: mkdir -p {PROMPTS_DIR}\n"
+            f"Then add the prompt templates listed in configs/prompts/."
+        )
     path = PROMPTS_DIR / name
     if not path.exists():
-        raise FileNotFoundError(f"Prompt template not found: {path}")
+        available = [p.name for p in PROMPTS_DIR.glob("*.txt")]
+        raise FileNotFoundError(
+            f"Prompt template not found: {path}\n"
+            f"Available prompts: {available if available else 'none — directory is empty'}\n"
+            f"Expected files: orchestrator.txt, text_agent.txt, image_agent.txt, "
+            f"table_agent.txt, critic.txt, summarizer.txt"
+        )
     return path.read_text()
-
-

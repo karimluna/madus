@@ -53,7 +53,7 @@ class LocalEmbeddings:
 class ColPaliEmbeddings:
     """ColPali page-level image retrieval using MaxSim.
     Needs more GPU VRAM than SigLIP. So better use VISION_BACKEND="local"
-    instead of "copali" if low GPU VRAM available.
+    or "siglip" instead of "copali" if low GPU VRAM available.
     """
     def __init__(self):
         import torch

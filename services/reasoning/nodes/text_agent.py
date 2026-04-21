@@ -2,7 +2,7 @@
 On retry, the critique from the Reflexion loop is threaded into the
 prompt as verbal feedback, no weight updates needed.
 
-ref: Reflexion paper — https://arxiv.org/abs/2303.11366
+ref: Reflexion paper: https://arxiv.org/abs/2303.11366
 """
 
 from core.models import DocumentState
