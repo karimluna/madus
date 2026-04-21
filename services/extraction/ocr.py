@@ -9,19 +9,21 @@ import threading
 import fitz 
 import numpy as np
 from paddleocr import PaddleOCR
+import logging
+import os
 
+logging.getLogger("ppocr").setLevel(logging.WARNING)
 _ocr = None 
 _lock = threading.Lock()
 
 
 def _get_ocr() -> PaddleOCR:
-    """Lazy singleton with double checked locking for thread safety"""
     global _ocr
     if _ocr is None:
         with _lock:
             if _ocr is None:
-                _ocr = PaddleOCR(use_angle_cls=True, lang="en", show_log=False)
-        return _ocr
+                _ocr = PaddleOCR(use_textline_orientation=True, lang="en", enable_mkldnn=False) # https://github.com/PaddlePaddle/Paddle/issues/77340
+    return _ocr  
     
 
 def extract_text_chunks(pdf_path: str) -> list[str]:
@@ -37,8 +39,20 @@ def extract_text_chunks(pdf_path: str) -> list[str]:
             pix.h, pix.w, pix.n
         )
         result = ocr.predict(img)
-        if result and result[0]:
-            text = " ".join(line[1][0] for line in result[0])
-            chunks.append(text)
+
+        if not result:
+            continue
+
+        page = result[0]
+
+        # handle new + old formats safely
+        if isinstance(page, dict):  
+            texts = page.get("rec_texts", [])
+        else:  # legacy fallback
+            texts = [line[1][0] for line in page if line and len(line) > 1]
+
+        if texts:
+            chunks.append(" ".join(texts))
+    
     doc.close()
     return chunks
