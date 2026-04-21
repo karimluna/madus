@@ -82,10 +82,10 @@ Image agent cost dominates everything else. `detail: "high"` tiles each image in
 
 ```bash
 LLM_BACKEND=local        # routes all agents through Ollama
-EMBEDDING_BACKEND=local  # uses BAAI/bge-m3 via transformers, no API key needed
+EMBEDDING_BACKEND=local  # uses BAAI/bge-small-en-v1.5 via transformers, no API key needed
 ```
 
-Requires `ollama pull llama3.2` and `ollama pull qwen2-vl:7b`. Tested on RTX 4060 8GB (each model fits in VRAM, loaded sequentially by Ollama).
+Requires `ollama pull llama3.2 | qwen2.5:1.5b | <text_generator>` and `ollama pull qwen2-vl:7b | moondream | <image-text-to-text>`, this depends on your loaded models, however is easily configured in `core/config.py`. Tested on RTX 4060 8GB (each model fits in VRAM, loaded sequentially by Ollama).
 
 
 ## Quickstart
