@@ -9,7 +9,7 @@
   <p align="center">Multi-Modal Agentic Document Understanding System</p>
   <p align="center">
     <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT">
-    <img src="https://img.shields.io/badge/Python-3.13-3776AB?logo=python" alt="Python">
+    <img src="https://img.shields.io/badge/Python-3.12-3776AB?logo=python" alt="Python">
   </p>
 </p>
 
