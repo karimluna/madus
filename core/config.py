@@ -17,6 +17,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 PROMPTS_DIR = PROJECT_ROOT / "configs" / "prompts"
 
 
+# `pydantic-settings` picks environment variables in real time with lowercases
 class Settings(BaseSettings):
     llm_backend: str = "local"
     vision_backend: str = "local"
