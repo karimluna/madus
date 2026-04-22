@@ -27,6 +27,10 @@ from core.models import DocumentState
 from core.cache import get_cached, set_cached
 from core.databricks_sink import write_to_kb
 
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s - %(message)s"
+)
 logger = logging.getLogger(__name__)
 router = APIRouter()
 

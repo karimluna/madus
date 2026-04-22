@@ -8,6 +8,8 @@ ref: Reflexion paper: https://arxiv.org/abs/2303.11366
 from core.models import DocumentState
 from core.config import get_chat_llm, load_prompt
 from services.reasoning.tools.retrieval import retrieve_hybrid
+import asyncio
+
 
 _template = load_prompt("text_agent.txt")
 
@@ -18,8 +20,8 @@ async def text_agent_node(state: DocumentState) -> dict:
     if "text" not in state.active_agents or not state.text_chunks:
         return {"text_answer": state.text_answer or "No text content available."}
 
-    relevant = retrieve_hybrid(
-        state.text_chunks, state.doc_id, state.question, k=5
+    relevant = await asyncio.to_thread(
+        retrieve_hybrid, state.text_chunks, state.doc_id, state.question, k=5
     )
 
     critique_section = ""

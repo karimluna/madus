@@ -33,24 +33,28 @@ def _cache_key(pdf_path: str, question: str = "") -> str:
     q_hash = hashlib.sha256(question.encode()).hexdigest()[:16]
     return f"madus:{pdf_hash}:{q_hash}"
 
-
-async def get_cached(pdf_path: str, question: str = "") -> DocumentState | None:
-    """Return cached state or `None`. Silently returns `None` if 
-    Redis is unavailable"""
+def _get_cached_sync(pdf_path: str, question: str) -> DocumentState | None:
     try:
         r = _get_redis()
-        raw = await asyncio.to_thread(r.get, _cache_key(pdf_path, question))
+        raw = r.get(_cache_key(pdf_path, question))
         if raw:
             return DocumentState.model_validate_json(raw)
     except redis.ConnectionError:
         logger.warning("Redis unavailable, skipping cache lookup")
     return None
 
-async def set_cached(pdf_path: str, question: str, state: DocumentState) -> None:
+
+def _set_cached_sync(pdf_path: str, question: str, state: DocumentState) -> None:
     try:
         r = _get_redis()
-        await asyncio.to_thread(
-            r.setex, _cache_key(pdf_path, question), _ttl, state.model_dump_json()
-        ) 
+        r.setex(_cache_key(pdf_path, question), _ttl, state.model_dump_json())
     except redis.ConnectionError:
         logger.warning("Redis unavailable, skipping cache write")
+
+
+async def get_cached(pdf_path: str, question: str = "") -> DocumentState | None:
+    return await asyncio.to_thread(_get_cached_sync, pdf_path, question)
+
+
+async def set_cached(pdf_path: str, question: str, state: DocumentState) -> None:
+    await asyncio.to_thread(_set_cached_sync, pdf_path, question, state)

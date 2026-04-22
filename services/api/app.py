@@ -11,6 +11,11 @@ from fastapi import FastAPI
 from services.api.routes.analyze import router as analyze_router
 from core.config import get_settings
 
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s - %(message)s"
+)
 logger = logging.getLogger(__name__)
 
 _graph = None
