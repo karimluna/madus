@@ -126,11 +126,5 @@ madus/
 ```
 
 
-## Motivation
-
-- 📖 Han et al., [MDocAgent (2025)](https://arxiv.org/abs/2503.13964)
-- 📖 Yao et al., [ReAct (2022)](https://arxiv.org/abs/2210.03629)
-- 📖 Shinn et al., [Reflexion (2023)](https://arxiv.org/abs/2303.11366)
-- 📖 Cormack et al., [Reciprocal Rank Fusion (2009)](https://plg.uwaterloo.ca/~gvcormac/cormacksigir09-rrf.pdf)
-- 📖 Malkov & Yashunin, [HNSW (2018)](https://arxiv.org/abs/1603.09320)
-- 📖 Faysse et al., [ColPali (2024)](https://arxiv.org/abs/2407.01449)
+## Acknowledgements
+MADUS adapts the architecture of [MDocAgent (2025)](https://github.com/aiming-lab/MDocAgent) into a production system. The orchestrator's dynamic routing relies on the [ReAct (2022)](https://github.com/ysymyth/ReAct) paradigm, while the Critic agent implements the [Reflexion (2023)](https://github.com/noahshinn/reflexion) pattern for verbal self-correction. Text retrieval fuses keyword and semantic rankings via [Reciprocal Rank Fusion (2009)](https://plg.uwaterloo.ca/~gvcormac/cormacksigir09-rrf.pdf) over vector indices powered by [HNSW (2018)](https://arxiv.org/abs/1603.09320). Visual processing concepts are inspired by [ColPali (2024)](https://github.com/illuin-tech/colpali).
