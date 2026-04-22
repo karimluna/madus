@@ -9,6 +9,7 @@ __pycache__/
 # Personal
 docs/mock/
 *.pdf
+*.drawio.png
 
 # Distribution / packaging
 .Python
