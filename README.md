@@ -23,7 +23,7 @@ MADUS implements **Hierarchical Orchestration** over five specialized agents. A 
 
 
 <p align="center">
-  <img src="docs/assets/show-arch.drawio.png" height="600" alt="Architecture diagram">
+  <img src="docs/assets/madus.png" height="350" alt="Architecture diagram">
 </p>
 
 
