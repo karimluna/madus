@@ -8,6 +8,7 @@ ref: ColPali, https://arxiv.org/abs/2407.01449
 
 import logging
 from typing import Optional
+from functools import lru_cache
 
 import chromadb
 
@@ -131,6 +132,7 @@ class SigLIPEmbeddings:
         return (page_emb @ query_emb.T).squeeze(-1)
 
 
+@lru_cache(maxsize=1) # avoids creating a new embedder each time loads
 def get_text_embedder():
     s = get_settings()
     if s.embedding_backend == "local":

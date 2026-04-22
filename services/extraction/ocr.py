@@ -32,6 +32,7 @@ def _get_ocr() -> PaddleOCR:
                     use_textline_orientation=True,
                     lang="en",
                     enable_mkldnn=False,  # avoids crash on some CPU configs
+                    text_detection_model_name="PP-OCRv5_mobile_det", # lighter than the default model
                 )
     return _ocr
 

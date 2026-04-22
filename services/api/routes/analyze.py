@@ -73,10 +73,9 @@ async def analyze(
         graph = get_graph()
         initial = DocumentState(pdf_path=tmp.name, question=question)
 
-        # 90 second overall timeout — prevents infinite hangs
+        # 300 second overall timeout, prevents infinite hangs
         result = await asyncio.wait_for(
             graph.ainvoke(initial.model_dump()),
-            timeout=90.0,
         )
 
         final_state = DocumentState(**result) if isinstance(result, dict) else result
@@ -163,7 +162,6 @@ async def analyze_stream(
             try:
                 result = await asyncio.wait_for(
                     graph.ainvoke(initial.model_dump()),
-                    timeout=90.0,
                 )
             except asyncio.TimeoutError:
                 yield emit("error", "Analysis timed out after 90 seconds")
