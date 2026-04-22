@@ -53,7 +53,7 @@ def extract_images(pdf_path: str) -> list[ImageChunk]:
     chunks = []
     for page_num in range(len(doc)):
         page = doc[page_num]
-        pix = page.get_pixmap(dpi=150)
+        pix = page.get_pixmap(dpi=50)
         img = np.frombuffer(pix.samples, dtype=np.uint8).reshape(
             pix.h, pix.w, pix.n
         )

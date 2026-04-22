@@ -45,7 +45,7 @@ def extract_text_chunks(pdf_path: str) -> list[str]:
     chunks = []
 
     for page in doc:
-        pix = page.get_pixmap(dpi=150)
+        pix = page.get_pixmap(dpi=50)
         img = np.frombuffer(pix.samples, dtype=np.uint8).reshape(
             pix.h, pix.w, pix.n
         )

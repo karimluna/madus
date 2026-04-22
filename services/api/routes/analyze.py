@@ -132,6 +132,8 @@ async def analyze_stream(
             tmp.flush()
             tmp.close()
 
+
+            logger.info("SSE: tmp file written %s", tmp.name)
             def emit(stage: str, detail: str = "") -> str:
                 return f"data: {json.dumps({'stage': stage, 'detail': detail})}\n\n"
 
@@ -149,7 +151,8 @@ async def analyze_stream(
                 return
 
             yield emit("extracting", "Running OCR, layout detection, and table parsing in background process")
-
+            logger.info("SSE: starting graph.ainvoke")
+            
             from services.api.app import get_graph
             graph = get_graph()
             initial = DocumentState(pdf_path=tmp.name, question=question)
