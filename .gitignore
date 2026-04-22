@@ -8,6 +8,7 @@ __pycache__/
 
 # Personal
 docs/mock/
+*.pdf
 
 # Distribution / packaging
 .Python
