@@ -47,7 +47,7 @@ def get_chat_llm(vision: bool = False) -> ChatOpenAI:
     backend = s.vision_backend if vision else s.llm_backend
     if backend == "local":
         return ChatOpenAI(
-            model="moondream:latest" if vision else "qwen2.5:1.5b",
+            model="moondream:latest" if vision else "llama3.2:latest",
             base_url="http://localhost:11434/v1",
             api_key="ollama",
             temperature=0,
