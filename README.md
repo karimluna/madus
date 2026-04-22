@@ -14,7 +14,7 @@
 </p>
 
 
-MADUS is a production-oriented multi-agent framework for document question answering over complex PDFs containing text, figures, and tables. It adapts the research architecture of [MDocAgent](https://arxiv.org/abs/2503.13964) (Han et al., 2025) with the addition of a hierarchical orchestator into a scalable, deployable system built on LangGraph, FastAPI, and Docker. 
+MADUS is a production-oriented multi-agent framework for document question answering over complex PDFs containing text, figures, and tables. It adapts the research architecture of [MDocAgent](https://arxiv.org/abs/2503.13964) (Han et al., 2025) with the addition of a __hierarchical orchestator__ into a _scalable_, deployable system built on LangGraph, FastAPI, and Docker. 
 
 
 ## Architecture
