@@ -102,7 +102,8 @@ curl -X POST http://localhost:8000/analyze \
   -F "question=What is the main finding?"
 ```
 
-n8n is available at `http://localhost:5678`. The default workflow watches a local folder and posts any dropped PDF to `/analyze`, pushing the result to a configured output (Slack, Google Sheets, etc.).
+> [!TIP]
+> For the integration of n8n check out [n8n workflow](./docs/n8n.md).
 
 
 ## Project structure
