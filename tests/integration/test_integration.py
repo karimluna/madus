@@ -1,9 +1,5 @@
-"""Integration tests, real LLM calls, run manually before merging.
+"""Integration tests, real LLM calls.
 These tests require OPENAI_API_KEY or a running Ollama instance.
-
-Do NOT mock the LLM. If you mock it, you are testing your mock.
-Keep 3 real PDFs in tests/fixtures/ -> one clean digital, one
-image-heavy, one scanned.
 """
 
 import os
