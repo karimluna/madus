@@ -13,6 +13,14 @@ from core.models import DocumentState
 from core.config import get_chat_llm, load_prompt
 from core.utils import parse_json
 
+import logging
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(name)s %(levelname)s %(message)s"
+)
+logger = logging.getLogger(__name__)
+
 _template = load_prompt("critic.txt")
 
 MAX_RETRIES = 2
@@ -31,6 +39,12 @@ async def critic_node(state: DocumentState) -> dict:
     llm = get_chat_llm()
     response = await llm.ainvoke(prompt)
     data = parse_json(response.content)
+    
+    logger.info("=== CRITIC ===")
+    logger.info("Sufficient: %s", data.get("sufficient"))
+    logger.info("Critique: %s", data.get("critique"))
+    logger.info("Retry count: %d", state.retry_count)
+    logger.info("Text answer preview: %s", (state.text_answer or "")[:200])
 
     sufficient = data.get("sufficient", True)
     needs_retry = not sufficient and state.retry_count < MAX_RETRIES
