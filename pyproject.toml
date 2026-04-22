@@ -35,6 +35,7 @@ colpali = [
 dev = [
     "pytest>=9.0.3",
     "pytest-asyncio>=0.24.0",
+    "grandalf>=0.8",
 ]
 [build-system]
 requires = ["hatchling"]
