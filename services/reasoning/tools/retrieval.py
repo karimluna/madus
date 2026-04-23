@@ -33,20 +33,25 @@ def rank_by_bm25(chunks: list[str], query: str) -> list[int]:
     return sorted(range(len(scores)), key=lambda i: scores[i], reverse=True)
 
 def rank_by_semantic(doc_id: str, query: str, n: int = 20) -> list[int]:
-    """Return chunk indices ranked by semantic similarity."""
-    # Unpack the documents and IDs from our updated function
-    docs, sem_ids = retrieve_semantic(doc_id, query, k=n)
-    
-    indices = []
-    for chunk_id in sem_ids:
-        # chunk_id looks like "doc123_4" -> extract the "4"
-        try:
-            idx_str = chunk_id.split("_")[-1]
-            indices.append(int(idx_str))
-        except (ValueError, IndexError):
-            continue
-            
-    return indices
+    """Return chunk indices ranked by semantic similarity.
+    Returns empty list if ChromaDB is unavailable, retrieve_hybrid
+    then falls back to BM25-only.
+    """
+    try:
+        result = retrieve_semantic(doc_id, query, k=n)
+        if not result:
+            return []
+        docs, sem_ids = result
+        indices = []
+        for chunk_id in sem_ids:
+            try:
+                indices.append(int(chunk_id.split("_")[-1]))
+            except (ValueError, IndexError):
+                continue
+        return indices
+    except Exception:
+        logger.warning("Semantic retrieval unavailable, using BM25 only")
+        return []
 
 def retrieve_hybrid(
     chunks: list[str],
