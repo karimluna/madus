@@ -21,9 +21,11 @@ class LocalEmbeddings:
     """BAAI/bge-m3 is 1024-dim, runs on CPU, no API cost. Remember:
     The formula for mean pooling is v = sum(M_i * H_i) / sum(M_i)
     then L2 normalization."""
+
     def __init__(self, model_id: str = "BAAI/bge-small-en-v1.5"):
         import torch
         from transformers import AutoTokenizer, AutoModel
+
         self.tok = AutoTokenizer.from_pretrained(model_id)
         self.model = AutoModel.from_pretrained(model_id, torch_dtype=torch.float32)
         self.model.eval()
@@ -31,10 +33,10 @@ class LocalEmbeddings:
 
     def _encode(self, texts: list[str]) -> list[list[float]]:
         inputs = self.tok(
-            texts, 
-            padding=True, 
+            texts,
+            padding=True,
             truncation=True,
-            max_length=512, 
+            max_length=512,
             return_tensors="pt",
         )
         with self.torch.no_grad():
@@ -45,19 +47,21 @@ class LocalEmbeddings:
 
     def embed_documents(self, texts: list[str]) -> list[list[float]]:
         return self._encode(texts)
-    
+
     def embed_query(self, text: str) -> list[float]:
         return self._encode([text])[0]
-    
+
 
 class ColPaliEmbeddings:
     """ColPali page-level image retrieval using MaxSim.
     Needs more GPU VRAM than SigLIP. So better use VISION_BACKEND="local"
     or "siglip" instead of "copali" if low GPU VRAM available.
     """
+
     def __init__(self):
         import torch
         from colpali_engine.models import ColFlor, ColFlorProcessor
+
         self.torch = torch
         self.model = ColFlor.from_pretrained(
             "ahmed-masry/ColFlor",
@@ -86,6 +90,7 @@ class SigLIPEmbeddings:
     ColFlow would be excellent with enough computation power,
     SigLIP is designed for efficient retrieval and uses simple
     cosine similarity which is enough for local use"""
+
     def __init__(self):
         import torch
         from transformers import AutoProcessor, AutoModel
@@ -93,19 +98,14 @@ class SigLIPEmbeddings:
         self.torch = torch
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
 
-        self.model = AutoModel.from_pretrained(
-            "google/siglip-base-patch16-224"
-        ).to(self.device)
-
-        self.processor = AutoProcessor.from_pretrained(
-            "google/siglip-base-patch16-224"
+        self.model = AutoModel.from_pretrained("google/siglip-base-patch16-224").to(
+            self.device
         )
 
+        self.processor = AutoProcessor.from_pretrained("google/siglip-base-patch16-224")
+
     def embed_page_images(self, pil_images: list):
-        inputs = self.processor(
-            images=pil_images,
-            return_tensors="pt"
-        ).to(self.device)
+        inputs = self.processor(images=pil_images, return_tensors="pt").to(self.device)
 
         with self.torch.no_grad():
             image_emb = self.model.get_image_features(**inputs)
@@ -113,11 +113,9 @@ class SigLIPEmbeddings:
         return image_emb  # shape: [N, D]
 
     def embed_query(self, text: str):
-        inputs = self.processor(
-            text=[text],
-            return_tensors="pt",
-            padding=True
-        ).to(self.device)
+        inputs = self.processor(text=[text], return_tensors="pt", padding=True).to(
+            self.device
+        )
 
         with self.torch.no_grad():
             text_emb = self.model.get_text_features(**inputs)
@@ -132,12 +130,13 @@ class SigLIPEmbeddings:
         return (page_emb @ query_emb.T).squeeze(-1)
 
 
-@lru_cache(maxsize=1) # avoids creating a new embedder each time loads
+@lru_cache(maxsize=1)  # avoids creating a new embedder each time loads
 def get_text_embedder():
     s = get_settings()
     if s.embedding_backend == "local":
         return LocalEmbeddings()
     from langchain_openai import OpenAIEmbeddings
+
     return OpenAIEmbeddings(model="text-embedding-3-small")
 
 
@@ -148,6 +147,7 @@ def get_image_embedder():
     if s.vision_backend == "colflow":
         return ColPaliEmbeddings()
     from langchain_openai import OpenAIEmbeddings
+
     return OpenAIEmbeddings(model="text-embedding-3-small")
 
 
@@ -160,7 +160,7 @@ def _get_chroma_client() -> Optional[chromadb.HttpClient]:
     except Exception:
         logger.warning("ChromaDB unavailable at %s:%s", s.chroma_host, s.chroma_port)
         return None
-    
+
 
 def index_chunks(doc_id: str, chunks: list[str]) -> None:
     """Index that chunks in ChromaDB for semantic retrieval.

@@ -21,13 +21,12 @@ async def table_agent_node(state: DocumentState) -> dict:
         critique_section = f"Previous attempt feedback: {state.critique}"
 
     tables_md = "\n\n".join(
-        f"Table {i+1} (page {t.page}):\n{t.markdown}"
+        f"Table {i + 1} (page {t.page}):\n{t.markdown}"
         for i, t in enumerate(state.tables)
     )
 
     prompt = (
-        _template
-        .replace("{{question}}", state.question)
+        _template.replace("{{question}}", state.question)
         .replace("{{tables}}", tables_md)
         .replace("{{critique_section}}", critique_section)
     )

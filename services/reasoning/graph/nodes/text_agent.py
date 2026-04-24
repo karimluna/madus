@@ -13,6 +13,7 @@ import asyncio
 
 _template = load_prompt("text_agent.txt")
 
+
 async def text_agent_node(state: DocumentState) -> dict:
     """Retrieve relevant chunks and answer the question.
     Returns early if text modality is not active or no chunks available.
@@ -29,8 +30,7 @@ async def text_agent_node(state: DocumentState) -> dict:
         critique_section = f"Previous attempt feedback: {state.critique}"
 
     prompt = (
-        _template
-        .replace("{{question}}", state.question)
+        _template.replace("{{question}}", state.question)
         .replace("{{context}}", "\n\n".join(relevant))
         .replace("{{critique_section}}", critique_section)
     )

@@ -1,6 +1,6 @@
 """Optional Databricks Delta Lake _sink_. Only activates
 when DATABRICKS_HOST is set. Delta Lake gives ACID trans-
-actions and time travel so you can audit what the system 
+actions and time travel so you can audit what the system
 knew at any point in time"""
 
 import logging
@@ -17,7 +17,7 @@ def write_to_kb(state: DocumentState) -> None:
     s = get_settings()
     if not s.databricks_host:
         return
-    
+
     try:
         from databricks import sql
 
@@ -36,11 +36,19 @@ def write_to_kb(state: DocumentState) -> None:
                             created_at TIMESTAMP, 
                     ) USING DELTA
                 """)
-                cur.execute("""
+                cur.execute(
+                    """
                             INSERT INTO madus.knowledge_base (
                                 doc_id, question, final_answer, confidence, created_at
                             ) VALUES (?, ?, ?, ?, current_timestamp())
-                """, [state.doc_id, state.question, state.final_answer, state.confidence])
+                """,
+                    [
+                        state.doc_id,
+                        state.question,
+                        state.final_answer,
+                        state.confidence,
+                    ],
+                )
         logger.info("Wrote doc %s to Databricks KB", state.doc_id)
     except Exception as e:
         logger.warning("Databricks write failed: %s", e)

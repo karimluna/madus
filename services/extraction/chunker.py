@@ -20,9 +20,7 @@ def extract_tables(pdf_path: str) -> list[TableChunk]:
     with pdfplumber.open(pdf_path) as pdf:
         for i, page in enumerate(pdf.pages):
             for table in page.extract_tables():
-                clean_cells = [
-                    [str(cell or "") for cell in row] for row in table
-                ]
+                clean_cells = [[str(cell or "") for cell in row] for row in table]
                 chunks.append(
                     TableChunk(
                         page=i,

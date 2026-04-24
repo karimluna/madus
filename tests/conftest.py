@@ -14,7 +14,7 @@ def fixtures_dir():
 
 @pytest.fixture
 def sample_pdf_path():
-    """Path to a sample PDF for testing. Skips if not available """
+    """Path to a sample PDF for testing. Skips if not available"""
     path = FIXTURES_DIR / "sample.pdf"
     if not path.exists():
         pytest.skip("Sample PDF not found in tests/fixtures/")

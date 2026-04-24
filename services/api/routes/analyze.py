@@ -28,8 +28,7 @@ from core.cache import get_cached, set_cached
 from core.databricks_sink import write_to_kb
 
 logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(name)s - %(message)s"
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -70,6 +69,7 @@ async def analyze(
             )
 
         from services.api.app import get_graph
+
         graph = get_graph()
         initial = DocumentState(pdf_path=tmp.name, question=question)
 
@@ -132,8 +132,8 @@ async def analyze_stream(
             tmp.flush()
             tmp.close()
 
-
             logger.info("SSE: tmp file written %s", tmp.name)
+
             def emit(stage: str, detail: str = "") -> str:
                 return f"data: {json.dumps({'stage': stage, 'detail': detail})}\n\n"
 
@@ -142,18 +142,27 @@ async def analyze_stream(
 
             if cached_state and cached_state.final_answer:
                 yield emit("cache_hit")
-                yield emit("done", json.dumps({
-                    "doc_id": cached_state.doc_id,
-                    "final_answer": cached_state.final_answer,
-                    "confidence": cached_state.confidence,
-                    "cached": True,
-                }))
+                yield emit(
+                    "done",
+                    json.dumps(
+                        {
+                            "doc_id": cached_state.doc_id,
+                            "final_answer": cached_state.final_answer,
+                            "confidence": cached_state.confidence,
+                            "cached": True,
+                        }
+                    ),
+                )
                 return
 
-            yield emit("extracting", "Running OCR, layout detection, and table parsing in background process")
+            yield emit(
+                "extracting",
+                "Running OCR, layout detection, and table parsing in background process",
+            )
             logger.info("SSE: starting graph.ainvoke")
-            
+
             from services.api.app import get_graph
+
             graph = get_graph()
             initial = DocumentState(pdf_path=tmp.name, question=question)
 
@@ -169,7 +178,9 @@ async def analyze_stream(
                 yield emit("error", "Analysis timed out after 90 seconds")
                 return
 
-            final_state = DocumentState(**result) if isinstance(result, dict) else result
+            final_state = (
+                DocumentState(**result) if isinstance(result, dict) else result
+            )
 
             await set_cached(tmp.name, question, final_state)
 
@@ -178,12 +189,18 @@ async def analyze_stream(
             except Exception as e:
                 logger.warning("Databricks sink failed: %s", e)
 
-            yield emit("done", json.dumps({
-                "doc_id": final_state.doc_id,
-                "final_answer": final_state.final_answer or "Unable to determine an answer.",
-                "confidence": final_state.confidence,
-                "cached": False,
-            }))
+            yield emit(
+                "done",
+                json.dumps(
+                    {
+                        "doc_id": final_state.doc_id,
+                        "final_answer": final_state.final_answer
+                        or "Unable to determine an answer.",
+                        "confidence": final_state.confidence,
+                        "cached": False,
+                    }
+                ),
+            )
 
         except Exception as e:
             logger.exception("Streaming analysis failed")
@@ -201,6 +218,6 @@ async def analyze_stream(
             # Prevent proxy buffering, each event must be sent immediately
             "Cache-Control": "no-cache",
             "Connection": "keep-alive",
-            "X-Accel-Buffering": "no", 
+            "X-Accel-Buffering": "no",
         },
     )

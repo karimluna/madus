@@ -33,7 +33,9 @@ async def extraction_node(state: DocumentState) -> dict:
 
     logger.info(
         "Extracted: %d text chunks, %d images, %d tables",
-        len(text_chunks), len(images), len(tables),
+        len(text_chunks),
+        len(images),
+        len(tables),
     )
 
     # Index chunks for semantic retrieval, side effect but necessary

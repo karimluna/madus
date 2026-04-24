@@ -39,18 +39,21 @@ def scanned_pdf():
 class TestExtractionIntegration:
     def test_ocr_extracts_text(self, digital_pdf):
         from services.extraction.ocr import extract_text_chunks
+
         chunks = extract_text_chunks(digital_pdf)
         assert len(chunks) > 0
         assert any(len(c) > 50 for c in chunks)
 
     def test_vision_extracts_images(self, image_heavy_pdf):
         from services.extraction.vision import extract_images
+
         images = extract_images(image_heavy_pdf)
         assert len(images) > 0
         assert all(img.image_b64 for img in images)
 
     def test_table_extraction(self, digital_pdf):
         from services.extraction.chunker import extract_tables
+
         tables = extract_tables(digital_pdf)
         # May or may not have tables depending on fixture
         for t in tables:

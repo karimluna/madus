@@ -1,4 +1,4 @@
-"""Environment based configuration and LLM factory: one env var switches 
+"""Environment based configuration and LLM factory: one env var switches
 between OpenAI and Ollama backends.
 
 ref: nibzard/awesome-agentic-patterns: the pattern of a factory
@@ -19,7 +19,9 @@ PROMPTS_DIR = PROJECT_ROOT / "configs" / "prompts"
 # `pydantic-settings` picks environment variables in real time with lowercases
 class Settings(BaseSettings):
     llm_backend: Literal["local", "openai"] = "local"
-    vision_backend: Literal["local", "colflow", "openai"] = "local" # colflow is optional as is more computationally demanding but still local
+    vision_backend: Literal["local", "colflow", "openai"] = (
+        "local"  # colflow is optional as is more computationally demanding but still local
+    )
     embedding_backend: Literal["local", "openai"] = "local"
     openai_api_key: str = ""
     redis_host: str = "localhost"
@@ -40,8 +42,8 @@ def get_settings() -> Settings:
 
 
 def get_chat_llm(vision: bool = False) -> ChatOpenAI:
-    """Return an LLM instance. Ollama exposes the same /v1 API surface so 
-    LangChain doesn't know the difference. Ollama has higher latency but 
+    """Return an LLM instance. Ollama exposes the same /v1 API surface so
+    LangChain doesn't know the difference. Ollama has higher latency but
     zero marginal cost"""
     s = get_settings()
     backend = s.vision_backend if vision else s.llm_backend
@@ -60,7 +62,7 @@ def get_chat_llm(vision: bool = False) -> ChatOpenAI:
 
 def load_prompt(name: str) -> str:
     """Load a prompt template from configs/prompts/.
- 
+
     Raises a clear error if the prompts directory or file
     is missing.
     """

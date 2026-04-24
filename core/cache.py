@@ -1,8 +1,7 @@
-"""SHA-256 content-adressed Redis cache. 
-Two files producing the same digest would require a preimage 
-attack which is computationally infeasible. So the hash is a 
+"""SHA-256 content-adressed Redis cache.
+Two files producing the same digest would require a preimage
+attack which is computationally infeasible. So the hash is a
 content adress."""
-
 
 import hashlib
 import logging
@@ -16,7 +15,7 @@ from core.config import get_settings
 logger = logging.getLogger(__name__)
 
 
-_ttl = 86400 # 24 hours
+_ttl = 86400  # 24 hours
 
 
 def _get_redis() -> redis.Redis:
@@ -32,6 +31,7 @@ def _cache_key(pdf_path: str, question: str = "") -> str:
         pdf_hash = hashlib.sha256(f.read()).hexdigest()
     q_hash = hashlib.sha256(question.encode()).hexdigest()[:16]
     return f"madus:{pdf_hash}:{q_hash}"
+
 
 def _get_cached_sync(pdf_path: str, question: str) -> DocumentState | None:
     try:

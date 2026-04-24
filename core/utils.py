@@ -1,13 +1,13 @@
 """Shared utilities used across reasonign nodes"""
 
-import json 
+import json
 import re
 
 
 def parse_json(text: str) -> dict:
-    """Extract JSON from LLM output. Handles markdown code blocks 
+    """Extract JSON from LLM output. Handles markdown code blocks
     and trailing prose that LLMd sometimes add.
-    
+
     regex-based extraction is fragile but pragmatic, but force small
     models to output strict JSON files is unreliable"""
     try:
@@ -39,11 +39,9 @@ def table_to_markdown(table: list[list[str | None]]) -> str:
         return ""
     rows = []
     for i, row in enumerate(table):
-        cells = [str(cell or"").replace("|","\\|") for cell in row]
+        cells = [str(cell or "").replace("|", "\\|") for cell in row]
         rows.append("| " + " | ".join(cells) + " |")
         if i == 0:
             rows.append("| " + " | ".join(["---"] * len(cells)) + " |")
-    
+
     return "\n".join(rows)
-
-

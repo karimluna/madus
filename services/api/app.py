@@ -13,8 +13,7 @@ from core.config import get_settings
 
 
 logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(name)s - %(message)s"
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
@@ -25,6 +24,7 @@ def get_graph():
     global _graph
     if _graph is None:
         from services.reasoning.graph.builder import build_graph
+
         _graph = build_graph()
     return _graph
 
@@ -43,10 +43,13 @@ async def lifespan(app: FastAPI):
     def _warm_ocr():
         try:
             from services.extraction.ocr import _get_ocr
+
             _get_ocr()
             logger.info("PaddleOCR warmed up successfully")
         except Exception as e:
-            logger.warning("PaddleOCR warm-up failed (will retry on first request): %s", e)
+            logger.warning(
+                "PaddleOCR warm-up failed (will retry on first request): %s", e
+            )
 
     await asyncio.to_thread(_warm_ocr)
 

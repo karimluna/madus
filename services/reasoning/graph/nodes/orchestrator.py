@@ -19,8 +19,7 @@ async def orchestrator_node(state: DocumentState) -> dict:
     and critic feedback. Returns active_agents list.
     """
     prompt = (
-        _template
-        .replace("{{question}}", state.question)
+        _template.replace("{{question}}", state.question)
         .replace("{{text_count}}", str(len(state.text_chunks)))
         .replace("{{image_count}}", str(len(state.images)))
         .replace("{{table_count}}", str(len(state.tables)))

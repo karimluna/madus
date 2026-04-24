@@ -24,9 +24,9 @@ async def _openai_vision(state: DocumentState) -> dict:
     content = [
         {
             "type": "text",
-            "text": _template
-            .replace("{{question}}", state.question)
-            .replace("{{critique_section}}", critique_section),
+            "text": _template.replace("{{question}}", state.question).replace(
+                "{{critique_section}}", critique_section
+            ),
         }
     ]
     # Cap at 4 images -> GPT-4o charges per image tile :)
@@ -37,10 +37,10 @@ async def _openai_vision(state: DocumentState) -> dict:
                 "image_url": {
                     "url": f"data:image/png;base64,{img.image_b64}",
                     "detail": "high",
-                }, # detail: "high" tiles each image into 512x512 cropts
-            }      # at 170 tokens per tile, costing more but capturing 
-        )          # fine chart detail. Use "low" (fixed 85 tokens/image)
-                   # if layout matters more than pixel content.
+                },  # detail: "high" tiles each image into 512x512 cropts
+            }  # at 170 tokens per tile, costing more but capturing
+        )  # fine chart detail. Use "low" (fixed 85 tokens/image)
+        # if layout matters more than pixel content.
 
     response = await llm.ainvoke([HumanMessage(content=content)])
     return {"image_answer": response.content}
@@ -59,9 +59,9 @@ async def _ollama_vision(state: DocumentState) -> dict:
     content = [
         {
             "type": "text",
-            "text": _template
-            .replace("{{question}}", state.question)
-            .replace("{{critique_section}}", critique_section),
+            "text": _template.replace("{{question}}", state.question).replace(
+                "{{critique_section}}", critique_section
+            ),
         }
     ]
     for img in state.images[:4]:

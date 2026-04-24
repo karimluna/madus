@@ -10,8 +10,13 @@ ref: BM25: https://www.cl.cam.ac.uk/techreports/UCAM-CL-TR-356.pdf
 ref: RRF: https://plg.uwaterloo.ca/~gvcormac/cormacksigir09-rrf.pdf
 """
 
+import logging
+
 from rank_bm25 import BM25Okapi
 from core.embeddings import retrieve_semantic
+
+logger = logging.getLogger(__name__)
+
 
 def retrieve_bm25(chunks: list[str], query: str, k: int = 5) -> list[str]:
     """BM25 retrieval over in-memory chunks."""
@@ -23,6 +28,7 @@ def retrieve_bm25(chunks: list[str], query: str, k: int = 5) -> list[str]:
     top_k = sorted(range(len(scores)), key=lambda i: scores[i], reverse=True)[:k]
     return [chunks[i] for i in top_k]
 
+
 def rank_by_bm25(chunks: list[str], query: str) -> list[int]:
     """Return chunk indices ranked by BM25 score (best first)."""
     if not chunks:
@@ -31,6 +37,7 @@ def rank_by_bm25(chunks: list[str], query: str) -> list[int]:
     bm25 = BM25Okapi(tokenized, k1=1.5, b=0.75)
     scores = bm25.get_scores(query.lower().split())
     return sorted(range(len(scores)), key=lambda i: scores[i], reverse=True)
+
 
 def rank_by_semantic(doc_id: str, query: str, n: int = 20) -> list[int]:
     """Return chunk indices ranked by semantic similarity.
@@ -53,6 +60,7 @@ def rank_by_semantic(doc_id: str, query: str, n: int = 20) -> list[int]:
         logger.warning("Semantic retrieval unavailable, using BM25 only")
         return []
 
+
 def retrieve_hybrid(
     chunks: list[str],
     doc_id: str,
@@ -62,18 +70,18 @@ def retrieve_hybrid(
     """Reciprocal Rank Fusion over BM25 and semantic retrieval."""
     if not chunks:
         return []
-        
+
     bm25_ranks = rank_by_bm25(chunks, query)
-    
+
     # We fetch exact indices instead of mapping strings
     sem_ranks = rank_by_semantic(doc_id, query, n=min(k * 3, len(chunks)))
 
     # RRF scoring with k0=60
     scores: dict[int, float] = {}
-    
+
     for rank, idx in enumerate(bm25_ranks):
         scores[idx] = scores.get(idx, 0.0) + 1.0 / (60 + rank)
-        
+
     for rank, idx in enumerate(sem_ranks):
         scores[idx] = scores.get(idx, 0.0) + 1.0 / (60 + rank)
 

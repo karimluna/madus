@@ -56,6 +56,7 @@ class TestParseJson:
 class TestModels:
     def test_document_state_defaults(self):
         from core.models import DocumentState
+
         state = DocumentState()
         assert state.doc_id
         assert state.text_chunks == []
@@ -66,6 +67,7 @@ class TestModels:
 
     def test_document_state_with_values(self):
         from core.models import DocumentState
+
         state = DocumentState(
             pdf_path="/tmp/test.pdf",
             question="What is this?",
@@ -86,5 +88,6 @@ class TestModels:
 class TestChunker:
     def test_extract_tables_nonexistent_file(self):
         from services.extraction.chunker import extract_tables
+
         with pytest.raises(Exception):
             extract_tables("/nonexistent/file.pdf")

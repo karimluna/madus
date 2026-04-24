@@ -54,9 +54,7 @@ def extract_images(pdf_path: str) -> list[ImageChunk]:
     for page_num in range(len(doc)):
         page = doc[page_num]
         pix = page.get_pixmap(dpi=150)
-        img = np.frombuffer(pix.samples, dtype=np.uint8).reshape(
-            pix.h, pix.w, pix.n
-        )
+        img = np.frombuffer(pix.samples, dtype=np.uint8).reshape(pix.h, pix.w, pix.n)
 
         # PyMuPDF gives RGB(A), OpenCV expects BGR
         if pix.n == 4:
@@ -70,8 +68,6 @@ def extract_images(pdf_path: str) -> list[ImageChunk]:
             crop = page_img[y : y + h, x : x + w]
             _, buf = cv2.imencode(".png", crop)
             b64 = base64.b64encode(buf).decode("utf-8")
-            chunks.append(
-                ImageChunk(page=page_num, image_b64=b64, bbox=(x, y, w, h))
-            )
+            chunks.append(ImageChunk(page=page_num, image_b64=b64, bbox=(x, y, w, h)))
     doc.close()
     return chunks

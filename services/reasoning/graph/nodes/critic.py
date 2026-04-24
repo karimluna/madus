@@ -16,8 +16,7 @@ from core.utils import parse_json
 import logging
 
 logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s %(name)s %(levelname)s %(message)s"
+    level=logging.INFO, format="%(asctime)s %(name)s %(levelname)s %(message)s"
 )
 logger = logging.getLogger(__name__)
 
@@ -29,8 +28,7 @@ MAX_RETRIES = 2
 async def critic_node(state: DocumentState) -> dict:
     """Evaluate all agent answers and decide if retry is needed."""
     prompt = (
-        _template
-        .replace("{{question}}", state.question)
+        _template.replace("{{question}}", state.question)
         .replace("{{text_answer}}", state.text_answer or "N/A")
         .replace("{{image_answer}}", state.image_answer or "N/A")
         .replace("{{table_answer}}", state.table_answer or "N/A")
@@ -39,7 +37,7 @@ async def critic_node(state: DocumentState) -> dict:
     llm = get_chat_llm()
     response = await llm.ainvoke(prompt)
     data = parse_json(response.content)
-    
+
     logger.info("=== CRITIC ===")
     logger.info("Sufficient: %s", data.get("sufficient"))
     logger.info("Critique: %s", data.get("critique"))
@@ -61,6 +59,6 @@ def route_after_critic(state: DocumentState) -> str:
     """Conditional edge: retry via orchestrator or pass to summarizer."""
     if state.needs_retry and state.retry_count <= MAX_RETRIES:
         return "orchestrator"
-    
+
     # we force the summarizer so the user understands why the answer is partial
     return "summarizer"

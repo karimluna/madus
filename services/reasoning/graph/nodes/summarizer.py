@@ -19,8 +19,7 @@ async def summarizer_node(state: DocumentState) -> dict:
         )
 
     prompt = (
-        _template
-        .replace("{{question}}", state.question)
+        _template.replace("{{question}}", state.question)
         .replace("{{text_answer}}", state.text_answer or "N/A")
         .replace("{{image_answer}}", state.image_answer or "N/A")
         .replace("{{table_answer}}", state.table_answer or "N/A")
