@@ -1,6 +1,7 @@
 """Embedding backends: OpenAI API, local BAAI/bge-m3, or ColPali.
-The text embedder uses mean polling + L2 normalization so cosine
-similarity reduces the dot product in ChromaDB's index
+The text embedder uses mean polling + L2 normalization so we will
+cosine similarity first beause it reduces the dot product in 
+ChromaDB's index
 
 ref: HNSW, https://arxiv.org/abs/1603.09320
 ref: ColPali, https://arxiv.org/abs/2407.01449
@@ -9,8 +10,10 @@ ref: ColPali, https://arxiv.org/abs/2407.01449
 import logging
 from typing import Optional
 from functools import lru_cache
+import psutil
 
 import chromadb
+import torch
 
 from core.config import get_settings
 
@@ -23,7 +26,6 @@ class LocalEmbeddings:
     then L2 normalization."""
 
     def __init__(self, model_id: str = "BAAI/bge-small-en-v1.5"):
-        import torch
         from transformers import AutoTokenizer, AutoModel
 
         self.tok = AutoTokenizer.from_pretrained(model_id)
@@ -192,3 +194,5 @@ def retrieve_semantic(doc_id: str, query: str, k: int = 5) -> list[str]:
     if not results["documents"]:
         return [], []
     return results["documents"][0], results["ids"][0]
+
+
