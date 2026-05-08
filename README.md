@@ -97,7 +97,7 @@ cp .env.example .env          # add OPENAI_API_KEY or set LLM_BACKEND=local
 
 docker compose up -d          # starts Redis, ChromaDB, n8n, API
 
-curl -X POST http://localhost:8000/analyze \
+`curl -X POST http://localhost:8000/api/analyze \
   -F "file=@your_document.pdf" \
   -F "question=What is the main finding?"
 ```
