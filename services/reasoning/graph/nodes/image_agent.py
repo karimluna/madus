@@ -86,6 +86,7 @@ async def image_agent_node(state: DocumentState) -> dict:
         return {"image_answer": state.image_answer or "No visual content detected."}
 
     s = get_settings()
+
     if s.vision_backend == "local":
         return await _ollama_vision(state)
     return await _openai_vision(state)
