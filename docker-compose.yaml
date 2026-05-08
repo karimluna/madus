@@ -6,6 +6,8 @@ services:
     ports:
       - "8000:8000"
     env_file: .env
+    extra_hosts:                                
+      - "host.docker.internal:host-gateway"
     depends_on:
       - redis
       - chroma
@@ -14,7 +16,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 1.5G   # Python multi-agent frameworks need room
+          memory: 4.0G   # Python multi-agent frameworks need room
           cpus: '1.0'    
         reservations:
           memory: 512M
