@@ -9,11 +9,25 @@ services:
       - chroma
     volumes:
       - ./configs:/app/configs
+    deploy:
+      resources:
+        limits:
+          memory: 1.5G   # Python multi-agent frameworks need room
+          cpus: '1.0'    
+        reservations:
+          memory: 512M
 
   redis:
     image: redis:7-alpine
     ports:
       - "6379:6379"
+    deploy:
+      resources:
+        limits:
+          memory: 256M   # Redis is super lightweight
+          cpus: '0.5'
+        reservations:
+          memory: 64M
 
   chroma:
     image: chromadb/chroma:latest
@@ -21,6 +35,13 @@ services:
       - "8001:8000"
     volumes:
       - chroma_data:/chroma/chroma
+    deploy:
+      resources:
+        limits:
+          memory: 1.5G   # Vector DBs need RAM for fast retrieval
+          cpus: '1.0'
+        reservations:
+          memory: 512M
 
   n8n:
     image: n8nio/n8n:latest
@@ -32,6 +53,15 @@ services:
       - N8N_BASIC_AUTH_ACTIVE=true
       - N8N_BASIC_AUTH_USER=admin
       - N8N_BASIC_AUTH_PASSWORD=madus
+      - EXECUTIONS_DATA_PRUNE=true        # Keeps n8n database small
+      - EXECUTIONS_DATA_MAX_AGE=168       # Delete execution data after 7 days
+    deploy:
+      resources:
+        limits:
+          memory: 1G     # Node.js needs some breathing room
+          cpus: '1.0'
+        reservations:
+          memory: 512M
 
 volumes:
   chroma_data:
