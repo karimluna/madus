@@ -10,6 +10,7 @@ from functools import lru_cache
 from typing import Literal
 from pydantic_settings import BaseSettings
 from langchain_openai import ChatOpenAI
+import os
 
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -50,7 +51,7 @@ def get_chat_llm(vision: bool = False) -> ChatOpenAI:
     if backend == "local":
         return ChatOpenAI(
             model="moondream:latest" if vision else "llama3.2:latest",
-            base_url="http://localhost:11434/v1",
+            base_url=os.getenv("OPENAI_BASE_URL", "http://host.docker.internal:11434/v1"),
             api_key="ollama",
             temperature=0,
         )
