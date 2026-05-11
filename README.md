@@ -91,7 +91,7 @@ Requires `ollama pull llama3.2 | qwen2.5:1.5b | <text_generator>` and `ollama pu
 ## Quickstart
 
 ```bash
-git clone https://github.com/youruser/madus && cd madus
+git clone https://github.com/<youruser>/madus && cd madus
 
 cp .env.example .env          # add OPENAI_API_KEY or set LLM_BACKEND=local
 
