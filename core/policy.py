@@ -24,11 +24,6 @@ class PolicyConfig:
     min_ram_local: int = 2 * 1024**3        # 2GB
     min_gpu_siglip: int = 2 * 1024**3       # 2GB VRAM
     min_gpu_colpali: int = 6 * 1024**3      # 6GB VRAM
-    
-    # max_local_tokens: int = 3000
-    # max_batch_local: int = 8
-
-
 
 
 def select_vision_backend(sys_state: SystemState, policy_config: PolicyConfig):
