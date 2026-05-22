@@ -56,8 +56,6 @@ $$\text{RRF}(d) = \sum_{r \in \{\text{BM25},\, \text{semantic}\}} \frac{1}{60 + 
 BM25 catches exact keyword matches that embeddings miss; semantic search catches paraphrase matches that BM25 misses. RRF fuses both ranked lists without requiring score calibration between rankers.
 
 
-
-
 ## API cost estimate (OpenAI backend)
 
 Costs per cold run on a typical 20-page academic PDF with a single question. A cache hit on a repeated document costs $0.00.

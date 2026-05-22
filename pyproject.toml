@@ -23,6 +23,8 @@ dependencies = [
     "uvicorn>=0.44.0",
     "torch>=2.11.0",
     "transformers>=5.5.4",
+    "accelerate>=1.13.0",
+    "optimum>=2.1.0",
 ]
 [project.optional-dependencies]
 colpali = [
